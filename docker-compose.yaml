@@ -1,0 +1,66 @@
+
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    ports: ["5432:5432"]
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: vercel-clone
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nebula_net
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 512M
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr internal://redpanda:9092,external://172.19.13.159:19092
+      - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:18082
+    ports:
+      - "19092:19092"
+      - "9092:9092"
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+    networks:
+      - nebula_net # <--- Explicit Network
+
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: myclickhousepassword
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    networks:
+      - nebula_net # <--- Explicit Network
+
+# 👇 Define the network explicitly
+networks:
+  nebula_net:
+    name: nebula_net
+    driver: bridge
+
+volumes:
+  postgres_data:
+  clickhouse_data:
+  redpanda_data:
