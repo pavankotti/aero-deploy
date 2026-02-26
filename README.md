@@ -1,3 +1,5 @@
+
+
 # Aero-Deploy: Distributed Deployment Engine
 
 A high-concurrency deployment platform that automates GitHub-to-Cloud workflows. Architected with isolated build environments and a real-time analytical logging pipeline.
@@ -6,6 +8,7 @@ A high-concurrency deployment platform that automates GitHub-to-Cloud workflows.
 
 The platform consists of four decoupled services to ensure high availability and isolation.
 
+<img width="1037" height="676" alt="image" src="https://github.com/user-attachments/assets/75dc920a-edf7-40f9-99f6-dbb46ae2c52f" />
 
 
 1.  **Build Server (Docker)**: Ephemeral worker that clones, builds, and uploads static assets to AWS S3.
